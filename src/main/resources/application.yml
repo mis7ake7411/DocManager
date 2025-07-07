@@ -1,0 +1,75 @@
+# logging 配置文件
+logging:
+  config: classpath:logback-spring.xml
+  file:
+    path: logs
+  level:
+        # 根日誌級別
+        root: INFO
+        # 日誌級別配置
+        org.springframework: INFO
+        org.springframework.web: DEBUG
+        org.hibernate.SQL: DEBUG
+        org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  logback:
+    rollingpolicy:
+      max-history: 30
+      max-file-size: 10MB
+      total-size-cap: 100MB
+
+jasypt:
+  encryptor:
+    algorithm: PBEWithMD5AndDES
+    iv-generator-classname: org.jasypt.iv.NoIvGenerator
+    password: ${JASYPT_ENCRYPTOR}
+
+# spring 配置文件
+spring:
+  application:
+    name: DocManager
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/doc_manager
+    username: postgres
+    password: ENC(mq6AFYn/4jD3hp/6Ie8naA==)
+    hikari:
+      # HikariCP 連接池名稱
+      pool-name: HikariPool-DocManager
+      # HikariCP 最大連接池大小
+      maximum-pool-size: 50
+      # HikariCP 最小空閒連接數
+      minimum-idle: 10
+      # HikariCP 連接超時時間（毫秒）
+      connection-timeout: 500000
+      # HikariCP 空閒連接超時時間（毫秒）
+      idle-timeout: 60000
+      # HikariCP 連接最大存活時間（毫秒）
+      max-lifetime: 540000
+      # HikariCP 連接測試查詢
+      connection-test-query: SELECT 1
+      # HikariCP 自動提交
+      auto-commit: true
+  jackson:
+    # 設定時區
+    time-zone: GMT+8
+    # 設定日期格式
+    date-format: yyyy-MM-dd HH:mm:ss
+    serialization:
+      indent-output: false
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    # 使用 REST API / 前後端分離, 關閉 OpenEntityManagerInView
+    open-in-view: false
+  output:
+    ansi:
+      # 啟用 ANSI 顏色輸出
+      enabled: always
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB

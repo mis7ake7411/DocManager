@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    日誌級別以及優先順序排序: OFF > FATAL > ERROR > WARN > INFO > DEBUG > TRACE > ALL
+    Configuration後面的status，這個用於設定log4j自身內部的資訊輸出，可以不設定，當設定成trace時，你會看到log4j內部各種詳細輸出
+    monitorInterval：Log4j能夠自動檢測修改配置 檔案和重新配置本身，設定間隔秒數
+ -->
+<configuration status="${logging.logback.level.root}" scan="true" monitorInterval="30" debug="true" >
+    <property name="project.name" value="docManager"/>
+    <!-- fallback 預設值，避免 Spring Boot 屬性尚未注入時報錯 -->
+    <property name="MAX_HISTORY" value="${logging.max-history:-30}"/>
+    <property name="MAX_FILE_SIZE" value="${logging.max-file-size:-10MB}"/>
+    <property name="TOTAL_SIZE_CAP" value="${logging.total-size-cap:-100MB}"/>
+    <!-- 在控制台顯示日誌狀態 -->
+    <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener"/>
+    <!--
+        %m輸出的資訊,%p日誌級別,%t執行緒名,%d日期,%c類的全名,%i索引【從數位0開始遞增】,,,
+         appender是configuration的子節點，是負責寫日誌的元件。
+         ConsoleAppender：把日誌輸出到控制台
+     -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!-- 使用 ANSI 颜色编碼，並包含文件名和行號 -->
+            <pattern>%d{HH:mm:ss.SSS} %highlight(%-5level) %magenta([%thread]) %cyan(%logger{15}) %magenta(%file:%line) - %msg%n</pattern>
+            <charset>UTF-8</charset> <!-- 控制台也要使用UTF-8，否則會中文亂碼 -->
+        </encoder>
+    </appender>
+    <!--
+        RollingFileAppender：滾動記錄檔，先將日誌記錄到指定檔，當符合某個條件時，將日誌記錄到其他檔，以下的大概意思是：
+        1.先按日期存日誌，日期變了，將前一天的日誌檔案名重命名為XXX%日期%索引，新的日誌仍然是sys.log
+        2.如果日期沒有發生變化，但是當前日誌的檔大小超過1KB時，對當前日誌進行分割 重命名
+     -->
+    <!-- INFO 級別日誌-->
+    <appender name="INFO_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>logs/info/${project.name}-info.log</File>
+        <!--
+            rollingPolicy:當發生滾動時，決定 RollingFileAppender 的行為，涉及檔移動和重命名。
+            TimeBasedRollingPolicy： 最常用的滾動策略，它根據時間來制定滾動策略，既負責滾動也負責出發滾動。
+            使用中的檔案的名字會根據fileNamePattern的值，每隔一段時間改變一次檔案名：sys.2017-12-05.0.log
+         -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/info/${project.name}-info.%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+            <maxHistory>${MAX_HISTORY}</maxHistory> <!-- 每產生一個日誌檔，該日誌檔的保存期限為設定值天數 -->
+            <maxFileSize>${MAX_FILE_SIZE}</maxFileSize> <!-- 單個檔案的大小，超過設定值分割新檔案 -->
+            <totalSizeCap>${TOTAL_SIZE_CAP}</totalSizeCap> <!-- 總檔案大小，超過設定值刪除最舊日期檔案-->
+        </rollingPolicy>
+
+        <!-- pattern節點，用來設置日誌的輸入格式 -->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %X{traceId} %logger{36} %file:%line - %msg%n</pattern>
+            <charset>UTF-8</charset> <!-- 記錄日誌的編碼 -->
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!-- DEBUG 級別日誌 -->
+    <appender name="DEBUG_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/debug/${project.name}-debug.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/debug/${project.name}-debug.%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+            <maxHistory>${MAX_HISTORY}</maxHistory> <!-- 每產生一個日誌檔，該日誌檔的保存期限為設定值天數 -->
+            <maxFileSize>${MAX_FILE_SIZE}</maxFileSize> <!-- 單個檔案的大小，超過設定值分割新檔案 -->
+            <totalSizeCap>${TOTAL_SIZE_CAP}</totalSizeCap> <!-- 總檔案大小，超過設定值刪除最舊日期檔案-->
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %X{traceId} %logger{36} %file:%line - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>DEBUG</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!-- ERROR 級別日誌 -->
+    <appender name="ERROR_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/error/${project.name}-error.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/error/${project.name}-error.%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+            <maxHistory>${MAX_HISTORY}</maxHistory> <!-- 每產生一個日誌檔，該日誌檔的保存期限為設定值天數 -->
+            <maxFileSize>${MAX_FILE_SIZE}</maxFileSize> <!-- 單個檔案的大小，超過設定值分割新檔案 -->
+            <totalSizeCap>${TOTAL_SIZE_CAP}</totalSizeCap> <!-- 總檔案大小，超過設定值刪除最舊日期檔案-->
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %X{traceId} %logger{36} %file:%line - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+    <!-- 控制台輸出日誌級別，並且存入日誌檔 -->
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="INFO_APPENDER"/>
+        <appender-ref ref="ERROR_APPENDER"/>
+        <appender-ref ref="DEBUG_APPENDER"/>
+    </root>
+</configuration>
