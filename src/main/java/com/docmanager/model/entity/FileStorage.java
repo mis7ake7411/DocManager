@@ -32,7 +32,6 @@ public class FileStorage {
   @Column(name = "file_size")
   private Long fileSize;
 
-  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
   @Column(name = "upload_time")
   private LocalDateTime uploadTime;
 

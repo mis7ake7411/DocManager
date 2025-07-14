@@ -1,5 +1,6 @@
 package com.docmanager.controller;
 
+import com.docmanager.model.base.PageResponse;
 import com.docmanager.model.entity.Document;
 import com.docmanager.model.vo.DocumentVO;
 import com.docmanager.repository.folderManager.DocumentRepository;
@@ -20,7 +21,7 @@ public class DocumentController {
     private final DocumentService documentService;
 
     @GetMapping("/all")
-    public List<DocumentVO> getAllDocuments(
+    public PageResponse<DocumentVO> getAllDocuments(
         @RequestParam(defaultValue = "1") int page,
         @RequestParam(defaultValue = "10") int pageSize) {
         Pageable pageable = Pageable.ofSize(pageSize).withPage(page - 1);

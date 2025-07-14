@@ -1,5 +1,6 @@
 package com.docmanager.service.document.Impl;
 
+import com.docmanager.model.base.PageResponse;
 import com.docmanager.model.entity.Document;
 import com.docmanager.model.entity.FileStorage;
 import com.docmanager.model.vo.DocumentVO;
@@ -17,20 +18,19 @@ public class DocumentServiceImpl implements DocumentService {
   private final DocumentRepository documentRepository;
 
   @Override
-  public List<DocumentVO> getAllDocuments(Pageable pageable) {
+  public PageResponse<DocumentVO> getAllDocuments(Pageable pageable) {
     Page<Document> documentsPage = documentRepository.findAll(pageable);
-    if (documentsPage.isEmpty()) {
-      return List.of();
-    }
 
     List<FileStorage> fileStorages = documentsPage.getContent()
         .stream()
         .map(Document::getFile)
         .toList();
 
-    return documentsPage.getContent()
+    List<DocumentVO> documentVOs = documentsPage.getContent()
         .stream()
         .map(document -> DocumentVO.fromEntity(document, fileStorages))
         .toList();
+
+    return PageResponse.of(documentVOs, documentsPage);
   }
 }

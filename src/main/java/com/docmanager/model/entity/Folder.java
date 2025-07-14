@@ -32,11 +32,9 @@ public class Folder {
   @Column(name = "sort_order")
   private Integer sortOrder;
 
-  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
   @Column(name = "created_time", nullable = false)
   private LocalDateTime createdTime = LocalDateTime.now();
 
-  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
   @Column(name = "modified_time")
   private LocalDateTime modifiedTime;
 

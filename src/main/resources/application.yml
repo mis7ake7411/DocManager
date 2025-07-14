@@ -53,8 +53,6 @@ spring:
   jackson:
     # 設定時區
     time-zone: GMT+8
-    # 設定日期格式
-    date-format: yyyy-MM-dd HH:mm:ss
     serialization:
       indent-output: false
   jpa:

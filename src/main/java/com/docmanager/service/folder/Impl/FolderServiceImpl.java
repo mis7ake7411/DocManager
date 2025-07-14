@@ -1,11 +1,16 @@
 package com.docmanager.service.folder.Impl;
 
+import com.docmanager.model.base.PageResponse;
+import com.docmanager.model.bo.FolderBO;
+import com.docmanager.model.dto.FolderQueryReqDTO;
 import com.docmanager.model.dto.FolderReqDTO;
 import com.docmanager.model.entity.Folder;
 import com.docmanager.model.vo.FolderTreeVO;
 import com.docmanager.model.vo.FolderVO;
 import com.docmanager.repository.folderManager.FolderRepository;
 import com.docmanager.service.folder.FolderService;
+import com.docmanager.specifications.FolderSpec;
+import com.docmanager.util.JsonUtils;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +19,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -120,5 +129,20 @@ public class FolderServiceImpl implements FolderService {
 
     // 保存更新後的資料夾
     folderRepository.save(folder);
+  }
+
+  @Override
+  public PageResponse<FolderVO> queryFolders(FolderQueryReqDTO folderReqDTO) {
+    FolderBO bo = folderReqDTO.toBO();
+    Specification<Folder> spec = FolderSpec.dynamic(bo);
+    Pageable pageable = PageResponse.getPageable(folderReqDTO.page(), folderReqDTO.pageSize());
+
+    Page<Folder> folderPage = folderRepository.findAll(spec, pageable);
+
+    List<FolderVO> folderVOList = folderPage.getContent().stream()
+        .map(FolderVO::fromEntity)
+        .toList();
+
+    return PageResponse.of(folderVOList, folderPage);
   }
 }

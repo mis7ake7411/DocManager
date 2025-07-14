@@ -1,5 +1,7 @@
 package com.docmanager.controller;
 
+import com.docmanager.model.base.PageResponse;
+import com.docmanager.model.dto.FolderQueryReqDTO;
 import com.docmanager.model.dto.FolderReqDTO;
 import com.docmanager.model.entity.Folder;
 import com.docmanager.model.vo.FolderTreeVO;
@@ -7,6 +9,7 @@ import com.docmanager.model.vo.FolderVO;
 import com.docmanager.service.folder.FolderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +30,11 @@ public class FolderController {
     @GetMapping("/{id}")
     public Folder getFolder(@PathVariable Long id) {
         return folderService.findById(id).orElse(null);
+    }
+
+    @PostMapping("/query")
+    public PageResponse<FolderVO> queryFolders(@RequestBody FolderQueryReqDTO folderReqDTO) {
+        return folderService.queryFolders(folderReqDTO);
     }
 
     @PostMapping("/create")
