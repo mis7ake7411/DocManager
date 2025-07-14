@@ -27,6 +27,8 @@ public class FileStorage {
   @Column(name = "file_name")
   private String fileName;
 
+  private String extension;
+
   @Column(name = "file_size")
   private Long fileSize;
 

@@ -17,6 +17,7 @@ logging:
       max-file-size: 10MB
       total-size-cap: 100MB
 
+# jasypt 配置文件
 jasypt:
   encryptor:
     algorithm: PBEWithMD5AndDES
@@ -71,5 +72,7 @@ spring:
       enabled: always
   servlet:
     multipart:
+      # 文件上傳配置
       max-file-size: 10MB
+      # 單個請求的最大文件大小
       max-request-size: 10MB

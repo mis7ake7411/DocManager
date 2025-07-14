@@ -1,6 +1,5 @@
-package com.docmanager.model.entity.folderManager;
+package com.docmanager.model.entity;
 
-import com.docmanager.model.entity.FileStorage;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
@@ -31,10 +30,13 @@ public class Document {
 
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
   @Column(name = "created_time", nullable = false)
-  private LocalDateTime createdTime;
+  private LocalDateTime createdTime = LocalDateTime.now();
 
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
   @Column(name = "modified_time")
   private LocalDateTime modifiedTime;
+
+  @Column(name = "delete_flag", nullable = false)
+  private Boolean deleteFlag = false;
 
 }
