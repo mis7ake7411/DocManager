@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import lombok.ToString.Exclude;
 
 @Entity
 @Table(name = "document")
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
+@ToString
 public class Document {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,10 +24,12 @@ public class Document {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "folder_id", nullable = false)
+  @Exclude
   private Folder folder;
 
   @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "file_id")
+  @Exclude
   private FileStorage file;
 
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
@@ -38,5 +42,10 @@ public class Document {
 
   @Column(name = "delete_flag", nullable = false)
   private Boolean deleteFlag = false;
+
+  @Column(name = "document_version", nullable = false)
+  private String documentVersion;
+
+  private String description;
 
 }

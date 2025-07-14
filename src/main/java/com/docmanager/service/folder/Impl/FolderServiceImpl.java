@@ -40,7 +40,7 @@ public class FolderServiceImpl implements FolderService {
     // 如果沒有子層級資料夾，則返回父層級資料夾列表
     if (children.isEmpty()) {
       return parents.stream()
-          .map(parent -> FolderTreeVO.fromEntity(parent, List.of()))
+          .map(FolderTreeVO::fromEntity)
           .toList();
     }
     // 將子層級資料夾按父層級ID分組
@@ -97,15 +97,10 @@ public class FolderServiceImpl implements FolderService {
     Folder folder = folderRepository.findByIdAndDeleteFlagFalse(folderReqDTO.id())
         .orElseThrow(() -> new IllegalArgumentException("資料夾不存在"));
 
-    // 檢查是否有重複的資料夾名稱
-    if (folderRepository.existsByFolderNameAndParentIdAndDeleteFlagFalse(
-        folderReqDTO.folderName(), folder.getParent() != null ? folder.getParent().getId() : null)) {
-      throw new IllegalArgumentException("資料夾名稱重複");
-    }
-
     // 更新資料夾屬性
     folder.setFolderName(folderReqDTO.folderName());
     folder.setSortOrder(folderReqDTO.sortOrder());
+    folder.setModifiedTime(LocalDateTime.now());
 
     // 保存更新後的資料夾
     Folder savedFolder = folderRepository.save(folder);

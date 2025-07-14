@@ -9,8 +9,10 @@ public record FolderVO (
     String folderName,
     Long parentId,
     Integer sortOrder,
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
     LocalDateTime createdTime,
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
+    LocalDateTime modifiedTime,
     Boolean deleteFlag
 ) {
 
@@ -21,6 +23,7 @@ public record FolderVO (
         savedFolder.getParent() != null ? savedFolder.getParent().getId() : null,
         savedFolder.getSortOrder(),
         savedFolder.getCreatedTime(),
+        savedFolder.getModifiedTime(),
         savedFolder.getDeleteFlag()
     );
   }

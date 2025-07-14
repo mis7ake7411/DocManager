@@ -11,7 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 
 @Slf4j
-public class FileStorageSpecifications {
+public class FileStorageSpec {
 
     public static Specification<FileStorage> dynamic(FileStorageBO bo){
         log.debug("FileStorageBO: {}", JsonUtils.toJson(bo));
