@@ -4,6 +4,7 @@ import com.docmanager.model.bo.FileStorageBO;
 import com.docmanager.model.dto.FileStorageReqDTO;
 import com.docmanager.model.entity.FileStorage;
 
+import com.docmanager.model.vo.FileStorageVO;
 import com.docmanager.repository.folderManager.FileStorageRepository;
 import com.docmanager.service.fileStorage.FileStorageService;
 import java.util.UUID;
@@ -24,15 +25,20 @@ public class FileStorageServiceImpl implements FileStorageService {
 
 
     @Override
-    public void uploadFile(FileStorageReqDTO requestDTO, MultipartFile file) throws IOException {
+    public FileStorageVO uploadFile(FileStorageReqDTO requestDTO, MultipartFile file) throws IOException {
         FileStorageBO bo = requestDTO.toBO();
         Path uploadPath = Paths.get(UPLOAD_DIR);
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
         }
+        // 檢查檔案是否為空
         String originalFileName = file.getOriginalFilename();
+        if (originalFileName == null || originalFileName.isEmpty()) {
+            throw new IllegalArgumentException("File name cannot be empty");
+        }
+        // 獲取檔案副檔名
         String extension = null;
-        if (originalFileName != null && originalFileName.contains(".")) {
+        if (originalFileName.contains(".")) {
             extension = originalFileName.substring(originalFileName.lastIndexOf('.') + 1);
         }
         Path filePath = uploadPath.resolve(originalFileName);
@@ -44,7 +50,9 @@ public class FileStorageServiceImpl implements FileStorageService {
         entity.setFileSize(bo.getFileSize());
         entity.setFilePath(filePath.toString());
         entity.setExtension(extension);
-        fileStorageRepository.save(entity);
+
+        FileStorage saveFileStorage = fileStorageRepository.save(entity);
+        return FileStorageVO.fromEntity(saveFileStorage);
     }
 
     @Override

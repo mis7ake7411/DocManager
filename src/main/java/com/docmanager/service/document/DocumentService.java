@@ -15,4 +15,8 @@ public interface DocumentService {
   Optional<DocumentVO> findById(Long id);
 
   DocumentVO saveDocument(@Valid DocumentUpsertReqDTO documentUpsertReqDTO);
+
+  DocumentVO updateDocument(@Valid DocumentUpsertReqDTO documentUpsertReqDTO);
+
+  void deleteById(Long id);
 }

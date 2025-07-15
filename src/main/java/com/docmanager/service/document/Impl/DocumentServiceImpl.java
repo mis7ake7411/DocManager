@@ -4,9 +4,11 @@ import com.docmanager.model.base.PageResponse;
 import com.docmanager.model.dto.DocumentUpsertReqDTO;
 import com.docmanager.model.entity.Document;
 import com.docmanager.model.entity.FileStorage;
+import com.docmanager.model.entity.Folder;
 import com.docmanager.model.vo.DocumentVO;
 import com.docmanager.repository.folderManager.DocumentRepository;
 import com.docmanager.repository.folderManager.FileStorageRepository;
+import com.docmanager.repository.folderManager.FolderRepository;
 import com.docmanager.service.document.DocumentService;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -23,8 +25,8 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class DocumentServiceImpl implements DocumentService {
-
   private final FileStorageRepository fileStorageRepository;
+  private final FolderRepository folderRepository;
   private final DocumentRepository documentRepository;
 
   @Override
@@ -48,17 +50,47 @@ public class DocumentServiceImpl implements DocumentService {
   @Override
   public DocumentVO saveDocument(DocumentUpsertReqDTO documentUpsertReqDTO) {
     FileStorage file = fileStorageRepository.getReferenceById(documentUpsertReqDTO.fileStorageId());
+    Folder folder = folderRepository.getReferenceById(documentUpsertReqDTO.folderId());
     Document document = Document.builder()
         .documentName(documentUpsertReqDTO.documentName())
         .documentVersion(getNextVersion(documentUpsertReqDTO.documentName(), documentUpsertReqDTO.folderId()))
         .description(documentUpsertReqDTO.description())
         .createdTime(LocalDateTime.now())
+        .folder(folder)
         .file(file)
         .build();
 
     Document savedDocument = documentRepository.save(document);
 
     return DocumentVO.fromEntity(savedDocument);
+  }
+
+  @Override
+  public DocumentVO updateDocument(DocumentUpsertReqDTO documentUpsertReqDTO) {
+    Document existingDocument = documentRepository.findById(documentUpsertReqDTO.id())
+        .orElseThrow(() -> new IllegalArgumentException("Document not found with id: " + documentUpsertReqDTO.id()));
+
+    // 更新文件屬性
+    existingDocument.setDocumentName(documentUpsertReqDTO.documentName());
+    existingDocument.setDescription(documentUpsertReqDTO.description());
+    existingDocument.setModifiedTime(LocalDateTime.now());
+
+    // 如果文件存儲ID有變更，則更新文件存儲
+    if (documentUpsertReqDTO.fileStorageId() != null) {
+      FileStorage file = fileStorageRepository.getReferenceById(documentUpsertReqDTO.fileStorageId());
+      existingDocument.setFile(file);
+    }
+
+    Document updatedDocument = documentRepository.save(existingDocument);
+
+    return DocumentVO.fromEntity(updatedDocument);
+  }
+
+  @Override
+  public void deleteById(Long id) {
+    Document document = documentRepository.findById(id)
+        .orElseThrow(() -> new IllegalArgumentException("Document not found with id: " + id));
+    document.setDeleteFlag(true); // 標記為已刪除
   }
 
   private String getNextVersion(String documentName, Long folderId) {
