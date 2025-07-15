@@ -2,7 +2,7 @@ package com.docmanager.model.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
-public record FolderReqDTO (
+public record FolderUpsertReqDTO(
     Long id,
     @NotBlank
     String folderName,

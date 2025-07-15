@@ -3,14 +3,13 @@ package com.docmanager.service.folder.Impl;
 import com.docmanager.model.base.PageResponse;
 import com.docmanager.model.bo.FolderBO;
 import com.docmanager.model.dto.FolderQueryReqDTO;
-import com.docmanager.model.dto.FolderReqDTO;
+import com.docmanager.model.dto.FolderUpsertReqDTO;
 import com.docmanager.model.entity.Folder;
 import com.docmanager.model.vo.FolderTreeVO;
 import com.docmanager.model.vo.FolderVO;
 import com.docmanager.repository.folderManager.FolderRepository;
 import com.docmanager.service.folder.FolderService;
 import com.docmanager.specifications.FolderSpec;
-import com.docmanager.util.JsonUtils;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +19,6 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -76,22 +74,22 @@ public class FolderServiceImpl implements FolderService {
   }
 
   @Override
-  public FolderVO createFolder(FolderReqDTO folderReqDTO) {
+  public FolderVO createFolder(FolderUpsertReqDTO folderUpsertReqDTO) {
     // 檢查是否有重複的資料夾名稱
     if (folderRepository.existsByFolderNameAndParentIdAndDeleteFlagFalse(
-        folderReqDTO.folderName(), folderReqDTO.parentId())) {
+        folderUpsertReqDTO.folderName(), folderUpsertReqDTO.parentId())) {
       throw new IllegalArgumentException("資料夾名稱重複");
     }
     Folder newFolder = new Folder();
     // 檢查父層級資料夾是否存在，並設定 parent
-    if (folderReqDTO.parentId() != null) {
-      Folder parent = folderRepository.findByIdAndDeleteFlagFalse(folderReqDTO.parentId())
+    if (folderUpsertReqDTO.parentId() != null) {
+      Folder parent = folderRepository.findByIdAndDeleteFlagFalse(folderUpsertReqDTO.parentId())
           .orElseThrow(() -> new IllegalArgumentException("父層資料夾不存在"));
       newFolder.setParent(parent);
     }
     // 設置新資料夾的屬性
-    newFolder.setFolderName(folderReqDTO.folderName());
-    newFolder.setSortOrder(folderReqDTO.sortOrder() != null ? folderReqDTO.sortOrder() : 1);
+    newFolder.setFolderName(folderUpsertReqDTO.folderName());
+    newFolder.setSortOrder(folderUpsertReqDTO.sortOrder() != null ? folderUpsertReqDTO.sortOrder() : 1);
     newFolder.setCreatedTime(LocalDateTime.now());
     newFolder.setDeleteFlag(false);
     // 保存新資料夾
@@ -101,14 +99,14 @@ public class FolderServiceImpl implements FolderService {
   }
 
   @Override
-  public FolderVO updateFolder(FolderReqDTO folderReqDTO) {
+  public FolderVO updateFolder(FolderUpsertReqDTO folderUpsertReqDTO) {
     // 查找要更新的資料夾
-    Folder folder = folderRepository.findByIdAndDeleteFlagFalse(folderReqDTO.id())
+    Folder folder = folderRepository.findByIdAndDeleteFlagFalse(folderUpsertReqDTO.id())
         .orElseThrow(() -> new IllegalArgumentException("資料夾不存在"));
 
     // 更新資料夾屬性
-    folder.setFolderName(folderReqDTO.folderName());
-    folder.setSortOrder(folderReqDTO.sortOrder());
+    folder.setFolderName(folderUpsertReqDTO.folderName());
+    folder.setSortOrder(folderUpsertReqDTO.sortOrder());
     folder.setModifiedTime(LocalDateTime.now());
 
     // 保存更新後的資料夾

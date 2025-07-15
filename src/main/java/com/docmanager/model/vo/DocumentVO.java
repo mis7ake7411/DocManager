@@ -20,20 +20,7 @@ public record DocumentVO (
             document.getDocumentVersion(),
             document.getCreatedTime() != null ? document.getCreatedTime() : null,
             document.getModifiedTime() != null ? document.getModifiedTime() : null,
-            List.of()
-        );
-    }
-
-    public static DocumentVO fromEntity(Document document, List<FileStorage> fileStorages) {
-        return new DocumentVO(
-            document.getId(),
-            document.getDocumentName(),
-            document.getDocumentVersion(),
-            document.getCreatedTime() != null ? document.getCreatedTime() : null,
-            document.getModifiedTime() != null ? document.getModifiedTime() : null,
-            fileStorages.stream()
-                .map(FileStorageVO::fromEntity)
-                .toList()
+            document.getFile() != null ? List.of(FileStorageVO.fromEntity(document.getFile())) : List.of()
         );
     }
 

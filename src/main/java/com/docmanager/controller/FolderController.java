@@ -2,14 +2,13 @@ package com.docmanager.controller;
 
 import com.docmanager.model.base.PageResponse;
 import com.docmanager.model.dto.FolderQueryReqDTO;
-import com.docmanager.model.dto.FolderReqDTO;
+import com.docmanager.model.dto.FolderUpsertReqDTO;
 import com.docmanager.model.entity.Folder;
 import com.docmanager.model.vo.FolderTreeVO;
 import com.docmanager.model.vo.FolderVO;
 import com.docmanager.service.folder.FolderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,13 +37,13 @@ public class FolderController {
     }
 
     @PostMapping("/create")
-    public FolderVO createFolder(@Valid @RequestBody FolderReqDTO folderReqDTO) {
-        return folderService.createFolder(folderReqDTO);
+    public FolderVO createFolder(@Valid @RequestBody FolderUpsertReqDTO folderUpsertReqDTO) {
+        return folderService.createFolder(folderUpsertReqDTO);
     }
 
     @PutMapping("/update")
-    public FolderVO updateFolder(@Valid @RequestBody FolderReqDTO folderReqDTO) {
-        return folderService.updateFolder(folderReqDTO);
+    public FolderVO updateFolder(@Valid @RequestBody FolderUpsertReqDTO folderUpsertReqDTO) {
+        return folderService.updateFolder(folderUpsertReqDTO);
     }
 
     @DeleteMapping("/{id}")

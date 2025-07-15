@@ -1,11 +1,13 @@
 package com.docmanager.controller;
 
 import com.docmanager.model.base.PageResponse;
+import com.docmanager.model.dto.DocumentUpsertReqDTO;
 import com.docmanager.model.entity.Document;
 import com.docmanager.model.vo.DocumentVO;
 import com.docmanager.repository.folderManager.DocumentRepository;
 import com.docmanager.service.document.DocumentService;
 import jakarta.validation.Valid;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
@@ -29,13 +31,13 @@ public class DocumentController {
     }
 
     @GetMapping("/{id}")
-    public Document getDocument(@PathVariable Long id) {
-        return documentRepository.findById(id).orElse(null);
+    public Optional<DocumentVO> getDocument(@PathVariable Long id) {
+        return documentService.findById(id);
     }
 
     @PostMapping("/create")
-    public Document createDocument(@Valid @RequestBody Document document) {
-        return documentRepository.save(document);
+    public DocumentVO createDocument(@Valid @RequestBody DocumentUpsertReqDTO documentUpsertReqDTO) {
+        return documentService.saveDocument(documentUpsertReqDTO);
     }
 
     @PutMapping("/update")
