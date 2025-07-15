@@ -1,6 +1,6 @@
 package com.docmanager.service.fileStorage.Impl;
 
-import com.docmanager.Provider.FilePathProvider;
+import com.docmanager.provider.FilePathProvider;
 import com.docmanager.constants.FileType;
 import com.docmanager.model.dto.FileStorageReqDTO.FileNamePartsDTO;
 import com.docmanager.model.entity.FileStorage;

@@ -1,4 +1,4 @@
-package com.docmanager.Provider;
+package com.docmanager.provider;
 
 import com.docmanager.component.FileStorageConfigBean;
 import com.docmanager.constants.FileType;
