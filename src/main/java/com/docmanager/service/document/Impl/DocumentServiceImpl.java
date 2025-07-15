@@ -10,6 +10,7 @@ import com.docmanager.repository.folderManager.DocumentRepository;
 import com.docmanager.repository.folderManager.FileStorageRepository;
 import com.docmanager.repository.folderManager.FolderRepository;
 import com.docmanager.service.document.DocumentService;
+import com.docmanager.util.JsonUtils;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -49,15 +50,16 @@ public class DocumentServiceImpl implements DocumentService {
 
   @Override
   public DocumentVO saveDocument(DocumentUpsertReqDTO documentUpsertReqDTO) {
-    FileStorage file = fileStorageRepository.getReferenceById(documentUpsertReqDTO.fileStorageId());
-    Folder folder = folderRepository.getReferenceById(documentUpsertReqDTO.folderId());
+    Optional<FileStorage> file = fileStorageRepository.findById(documentUpsertReqDTO.fileStorageId());
+    Optional<Folder> folder = folderRepository.findById(documentUpsertReqDTO.folderId());
     Document document = Document.builder()
         .documentName(documentUpsertReqDTO.documentName())
         .documentVersion(getNextVersion(documentUpsertReqDTO.documentName(), documentUpsertReqDTO.folderId()))
         .description(documentUpsertReqDTO.description())
         .createdTime(LocalDateTime.now())
-        .folder(folder)
-        .file(file)
+        .folder(folder.orElse(null))
+        .file(file.orElse(null))
+        .deleteFlag(false)
         .build();
 
     Document savedDocument = documentRepository.save(document);

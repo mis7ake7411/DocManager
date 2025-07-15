@@ -33,6 +33,6 @@ public class FileStorage {
   private Long fileSize;
 
   @Column(name = "upload_time")
-  private LocalDateTime uploadTime;
+  private LocalDateTime uploadTime = LocalDateTime.now();
 
 }

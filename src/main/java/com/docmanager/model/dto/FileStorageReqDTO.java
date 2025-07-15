@@ -22,4 +22,6 @@ public record FileStorageReqDTO(
         )
         .build();
   }
+
+  public record FileNamePartsDTO(String name, String extension) {}
 }

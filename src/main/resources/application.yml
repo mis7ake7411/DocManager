@@ -1,3 +1,12 @@
+# 應用程序配置文件
+fileStorage:
+  file:
+    # 文件存儲路徑
+    upload-path: C:/uploads
+    # 文件上傳大小限制
+    max-upload-size: 10MB
+    # 文件下載緩存時間（秒）
+    download-cache-time: 3600
 # logging 配置文件
 logging:
   config: classpath:logback-spring.xml

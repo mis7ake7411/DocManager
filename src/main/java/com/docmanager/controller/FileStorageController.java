@@ -1,5 +1,6 @@
 package com.docmanager.controller;
 
+import com.docmanager.constants.FileType;
 import com.docmanager.model.vo.FileStorageVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,7 +29,7 @@ public class FileStorageController {
     public FileStorageVO uploadFile(@ModelAttribute FileStorageReqDTO requestDTO,
                             @RequestParam("file") MultipartFile file) throws IOException {
         // 呼叫 service 儲存檔案與DTO資料
-      return fileStorageService.uploadFile(requestDTO, file);
+      return fileStorageService.uploadFile(FileType.DOCUMENT, file);
     }
 
     @GetMapping("/download")

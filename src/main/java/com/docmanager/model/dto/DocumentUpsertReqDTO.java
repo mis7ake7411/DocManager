@@ -1,12 +1,12 @@
 package com.docmanager.model.dto;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public record DocumentUpsertReqDTO(
     Long id,
     String documentName,
     String documentContent,
-    @NotBlank
+    @NotNull
     Long folderId,
     Long fileStorageId,
     Boolean deleteFlag,

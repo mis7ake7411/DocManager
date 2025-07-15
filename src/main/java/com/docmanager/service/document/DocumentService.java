@@ -2,10 +2,8 @@ package com.docmanager.service.document;
 
 import com.docmanager.model.base.PageResponse;
 import com.docmanager.model.dto.DocumentUpsertReqDTO;
-import com.docmanager.model.entity.Document;
 import com.docmanager.model.vo.DocumentVO;
 import jakarta.validation.Valid;
-import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 
