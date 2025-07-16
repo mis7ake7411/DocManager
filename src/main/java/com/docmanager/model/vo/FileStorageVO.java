@@ -9,6 +9,7 @@ public record FileStorageVO (
     String uuid,
     String fileName,
     String extension,
+    String fullFileName,
     String filePath,
     Long fileSize,
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSS")
@@ -20,6 +21,7 @@ public record FileStorageVO (
             fileStorage.getUuid() != null ? fileStorage.getUuid().toString() : null,
             fileStorage.getFileName(),
             fileStorage.getExtension(),
+            String.format("%s.%s", fileStorage.getFileName(), fileStorage.getExtension()),
             fileStorage.getFilePath(),
             fileStorage.getFileSize(),
             fileStorage.getUploadTime() != null ? fileStorage.getUploadTime() : null

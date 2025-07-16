@@ -49,7 +49,7 @@ public class FileStorageController {
             throw new IOException("檔案不存在: " + filePath);
         }
 
-        String fileName = String.format("%s.%s", fileStorageVO.fileName(), fileStorageVO.extension());
+        String fileName = fileStorageVO.fullFileName();
         String encodedFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8).replace("+", "%20");
         String contentType = Files.probeContentType(filePath);
         if (contentType == null) {
@@ -58,7 +58,8 @@ public class FileStorageController {
 
         InputStreamResource resource = new InputStreamResource(Files.newInputStream(filePath));
         return ResponseEntity.ok()
-            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=UTF-8''" + encodedFileName)
+            .header(HttpHeaders.CONTENT_DISPOSITION,
+                "attachment; filename=\"" + encodedFileName + "\"; filename*=UTF-8''" + encodedFileName)
             .contentType(MediaType.parseMediaType(contentType))
             .contentLength(Files.size(filePath))
             .body(resource);
