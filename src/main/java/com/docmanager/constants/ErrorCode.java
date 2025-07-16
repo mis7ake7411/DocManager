@@ -2,9 +2,11 @@ package com.docmanager.constants;
 
 public enum ErrorCode {
   SUCCESS("200", "成功"),
-  VALIDATION_ERROR("400", "參數驗證失敗"),
+  VALIDATION_ERROR("40001", "參數驗證失敗"),
+  PARAM_MISSING("40002", "缺少必要參數"),
   NOT_FOUND("404", "資源不存在"),
-  BUSINESS_ERROR("409", "邏輯錯誤"),
+  FILE_TOO_LARGE("40010", "上傳檔案大小超過限制"),
+  DUPLICATE_RECORD("40901", "資料重複"),
   SYSTEM_ERROR("500", "系統錯誤");
 
   private final String code;

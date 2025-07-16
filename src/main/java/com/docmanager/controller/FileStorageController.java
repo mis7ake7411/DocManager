@@ -1,5 +1,6 @@
 package com.docmanager.controller;
 
+import com.docmanager.component.FileStorageConfigBean;
 import com.docmanager.constants.FileType;
 import com.docmanager.model.vo.FileStorageVO;
 import java.net.URLEncoder;
@@ -29,8 +30,8 @@ import com.docmanager.service.fileStorage.FileStorageService;
 @RequiredArgsConstructor
 @RequestMapping("/api/fileStorage")
 public class FileStorageController {
+    private final FileStorageConfigBean fileStorageConfigBean;
     private final FileStorageService fileStorageService;
-
 
     @PostMapping("/upload")
     public FileStorageVO uploadFile(@ModelAttribute FileStorageReqDTO requestDTO,
@@ -60,6 +61,7 @@ public class FileStorageController {
         return ResponseEntity.ok()
             .header(HttpHeaders.CONTENT_DISPOSITION,
                 "attachment; filename=\"" + encodedFileName + "\"; filename*=UTF-8''" + encodedFileName)
+            .header(HttpHeaders.CACHE_CONTROL, "public, max-age=" + fileStorageConfigBean.getDownloadCacheTime())
             .contentType(MediaType.parseMediaType(contentType))
             .contentLength(Files.size(filePath))
             .body(resource);

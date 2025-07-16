@@ -30,6 +30,8 @@ public class FileStorageServiceImpl implements FileStorageService {
 
     @Override
     public FileStorageVO uploadFile(FileType fileType, MultipartFile file) throws IOException {
+        validateFileSize(file);
+
         String originalFileName = pathProvider.getOriginalFileName(file);
         FileNamePartsDTO nameParts = pathProvider.parseFileName(originalFileName);
 
@@ -65,6 +67,25 @@ public class FileStorageServiceImpl implements FileStorageService {
         List<String> allowedTypes = Optional.ofNullable(fileStorageConfigBean.getAllowedTypes()).orElse(List.of());
         if (!allowedTypes.contains(extension)) {
             throw new IllegalArgumentException("不允許上傳的檔案類型: " + extension);
+        }
+    }
+
+    /**
+     * 驗證檔案大小是否超過設定的最大上傳限制
+     *
+     * @param file MultipartFile
+     * @throws IllegalArgumentException 如果檔案大小超過限制
+     */
+    private void validateFileSize(MultipartFile file) {
+        long fileSize = file.getSize();
+        long allowedSize = fileStorageConfigBean.getMaxUploadSize().toBytes();
+
+        if (fileSize > allowedSize) {
+            throw new IllegalArgumentException(String.format(
+                "檔案超過限制，類型最大允許 %d MB，目前大小 %.2f MB",
+                allowedSize / 1024 / 1024,
+                (double) fileSize / 1024 / 1024
+            ));
         }
     }
 
