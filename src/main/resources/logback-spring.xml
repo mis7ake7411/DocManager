@@ -20,7 +20,7 @@
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <!-- 使用 ANSI 颜色编碼，並包含文件名和行號 -->
-            <pattern>%d{HH:mm:ss.SSS} %highlight(%-5level) %magenta([%thread]) %cyan(%logger{15}) %magenta(%file:%line) - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} %highlight(%-5level) %magenta([%thread]) %yellow([traceId=%X{traceId}]) %cyan(%logger{15}) %highlight(%file:[%line]) - %msg%n</pattern>
             <charset>UTF-8</charset> <!-- 控制台也要使用UTF-8，否則會中文亂碼 -->
         </encoder>
     </appender>
@@ -46,7 +46,7 @@
 
         <!-- pattern節點，用來設置日誌的輸入格式 -->
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %X{traceId} %logger{36} %file:%line - %msg%n</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] [traceId=%X{traceId}] %logger{36} %file:%line - %msg%n</pattern>
             <charset>UTF-8</charset> <!-- 記錄日誌的編碼 -->
         </encoder>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
@@ -66,7 +66,7 @@
             <totalSizeCap>${TOTAL_SIZE_CAP}</totalSizeCap> <!-- 總檔案大小，超過設定值刪除最舊日期檔案-->
         </rollingPolicy>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %X{traceId} %logger{36} %file:%line - %msg%n</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] [traceId=%X{traceId}] %logger{36} %file:%line - %msg%n</pattern>
             <charset>UTF-8</charset>
         </encoder>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
@@ -86,7 +86,7 @@
             <totalSizeCap>${TOTAL_SIZE_CAP}</totalSizeCap> <!-- 總檔案大小，超過設定值刪除最舊日期檔案-->
         </rollingPolicy>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %X{traceId} %logger{36} %file:%line - %msg%n</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] [traceId=%X{traceId}] %logger{36} %file:%line - %msg%n</pattern>
             <charset>UTF-8</charset>
         </encoder>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
