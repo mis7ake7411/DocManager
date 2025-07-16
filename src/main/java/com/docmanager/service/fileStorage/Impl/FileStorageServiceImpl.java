@@ -1,5 +1,6 @@
 package com.docmanager.service.fileStorage.Impl;
 
+import com.docmanager.component.FileStorageConfigBean;
 import com.docmanager.provider.FilePathProvider;
 import com.docmanager.constants.FileType;
 import com.docmanager.model.dto.FileStorageReqDTO.FileNamePartsDTO;
@@ -8,6 +9,8 @@ import com.docmanager.model.entity.FileStorage;
 import com.docmanager.model.vo.FileStorageVO;
 import com.docmanager.repository.folderManager.FileStorageRepository;
 import com.docmanager.service.fileStorage.FileStorageService;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +24,7 @@ import java.nio.file.Path;
 @Service
 @RequiredArgsConstructor
 public class FileStorageServiceImpl implements FileStorageService {
+    private final FileStorageConfigBean fileStorageConfigBean;
     private final FilePathProvider pathProvider;
     private final FileStorageRepository fileStorageRepository;
 
@@ -28,6 +32,8 @@ public class FileStorageServiceImpl implements FileStorageService {
     public FileStorageVO uploadFile(FileType fileType, MultipartFile file) throws IOException {
         String originalFileName = pathProvider.getOriginalFileName(file);
         FileNamePartsDTO nameParts = pathProvider.parseFileName(originalFileName);
+
+        validateUploadWhiteList(nameParts.extension());
 
         UUID fileFolder = UUID.randomUUID();
         Path folderPath = pathProvider.generateFolder(fileType, fileFolder);
@@ -47,6 +53,19 @@ public class FileStorageServiceImpl implements FileStorageService {
         }
         // 讀取檔案內容並返回
         return FileStorageVO.fromEntity(fileStorage);
+    }
+
+    /**
+     * 驗證上傳的檔案副檔名是否在允許的白名單中
+     *
+     * @param extension 檔案副檔名
+     * @throws IllegalArgumentException 如果副檔名不在允許的白名單中
+     */
+    public void validateUploadWhiteList(String extension) {
+        List<String> allowedTypes = Optional.ofNullable(fileStorageConfigBean.getAllowedTypes()).orElse(List.of());
+        if (!allowedTypes.contains(extension)) {
+            throw new IllegalArgumentException("不允許上傳的檔案類型: " + extension);
+        }
     }
 
     /**

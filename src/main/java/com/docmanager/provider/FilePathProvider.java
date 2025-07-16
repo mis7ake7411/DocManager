@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -73,7 +75,8 @@ public class FilePathProvider {
     int dotIndex = originalFileName.lastIndexOf(".");
     String name =
         (dotIndex != -1) ? originalFileName.substring(0, dotIndex).trim() : originalFileName.trim();
-    String ext = (dotIndex != -1) ? originalFileName.substring(dotIndex + 1).trim() : "";
+    String ext =
+        (dotIndex != -1) ? originalFileName.substring(dotIndex + 1).trim().toLowerCase() : "";
     return new FileNamePartsDTO(name, ext);
   }
 
