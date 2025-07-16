@@ -2,7 +2,15 @@ package com.docmanager.controller;
 
 import com.docmanager.constants.FileType;
 import com.docmanager.model.vo.FileStorageVO;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,7 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import java.io.IOException;
-import org.springframework.core.io.ByteArrayResource;
 import com.docmanager.model.dto.FileStorageReqDTO;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import com.docmanager.service.fileStorage.FileStorageService;
@@ -32,15 +39,28 @@ public class FileStorageController {
       return fileStorageService.uploadFile(FileType.DOCUMENT, file);
     }
 
-    @GetMapping("/download")
-    public ResponseEntity<ByteArrayResource> downloadFile(@RequestParam("filename") String filename) throws IOException {
+    @GetMapping("/download/{uuid}")
+    public ResponseEntity<Resource> downloadFile(@PathVariable String uuid) throws IOException {
         // 由 service 取得檔案內容
-        byte[] fileContent = fileStorageService.downloadFile(filename);
-        ByteArrayResource resource = new ByteArrayResource(fileContent);
+        FileStorageVO fileStorageVO = fileStorageService.downloadFile(uuid);
+        Path filePath = Paths.get(fileStorageVO.filePath());
+
+        if (!Files.exists(filePath)) {
+            throw new IOException("檔案不存在: " + filePath);
+        }
+
+        String fileName = String.format("%s.%s", fileStorageVO.fileName(), fileStorageVO.extension());
+        String encodedFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8).replace("+", "%20");
+        String contentType = Files.probeContentType(filePath);
+        if (contentType == null) {
+            contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
+        }
+
+        InputStreamResource resource = new InputStreamResource(Files.newInputStream(filePath));
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .contentLength(fileContent.length)
-                .body(resource);
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=UTF-8''" + encodedFileName)
+            .contentType(MediaType.parseMediaType(contentType))
+            .contentLength(Files.size(filePath))
+            .body(resource);
     }
 }

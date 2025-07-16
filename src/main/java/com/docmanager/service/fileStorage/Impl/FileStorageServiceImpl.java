@@ -16,9 +16,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @Slf4j
 @Service
@@ -44,9 +42,13 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     @Override
-    public byte[] downloadFile(String filename) throws IOException {
-        Path filePath = Paths.get("  ", filename);
-        return Files.readAllBytes(filePath);
+    public FileStorageVO downloadFile(String uuid) {
+        FileStorage fileStorage = fileStorageRepository.findByUuid(UUID.fromString(uuid));
+        if (fileStorage == null) {
+            throw new IllegalArgumentException("檔案不存在或已被刪除");
+        }
+        // 讀取檔案內容並返回
+        return FileStorageVO.fromEntity(fileStorage);
     }
 
     /**
