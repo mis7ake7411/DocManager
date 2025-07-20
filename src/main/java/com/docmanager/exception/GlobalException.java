@@ -1,18 +1,22 @@
 package com.docmanager.exception;
 
 import com.docmanager.constants.ErrorCode;
-import lombok.RequiredArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@RequiredArgsConstructor
+@Setter
+@Getter
 public class GlobalException extends RuntimeException {
   private final ErrorCode errorCode;
+
+  public GlobalException(ErrorCode errorCode) {
+    super(errorCode.message());
+    this.errorCode = errorCode;
+  }
 
   public GlobalException(ErrorCode errorCode, String message) {
     super(message);
     this.errorCode = errorCode;
   }
 
-  public ErrorCode getErrorCode() {
-    return errorCode;
-  }
 }
