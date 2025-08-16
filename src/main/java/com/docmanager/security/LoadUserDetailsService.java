@@ -26,7 +26,7 @@ public class LoadUserDetailsService implements UserDetailsService {
         .toList();
 
     return new org.springframework.security.core.userdetails.User(
-        user.getUsername(),
+        user.getAccount(),
         user.getPassword(),
         user.getEnabled(),
         true,

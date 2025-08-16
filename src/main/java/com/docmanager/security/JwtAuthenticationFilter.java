@@ -10,14 +10,13 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
   private final JwtUtil jwtUtil;
-  private final UserDetailsService userDetailsService;
+  private final LoadUserDetailsService userDetailsService;
 
   @Override
   protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
@@ -26,10 +25,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     if (authHeader != null && authHeader.startsWith("Bearer ")) {
       String jwt = authHeader.substring(7);
-      String username = jwtUtil.extractAccount(jwt);
+      String account = jwtUtil.extractAccount(jwt);
 
-      if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+      if (account != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(account);
         if (jwtUtil.validateToken(jwt, userDetails)) {
           UsernamePasswordAuthenticationToken authentication =
               new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

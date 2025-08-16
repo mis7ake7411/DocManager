@@ -16,7 +16,7 @@ public class JwtUtil {
 
   public String generateAccessToken(Users user) {
     return Jwts.builder()
-        .setSubject(user.getUsername())
+        .setSubject(user.getAccount())
         .claim("roles", user.getRoles().stream().map(Roles::getRoleName).toList())
         .setIssuedAt(new Date())
         .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION))
@@ -26,7 +26,7 @@ public class JwtUtil {
 
   public String generateRefreshToken(Users user) {
     return Jwts.builder()
-        .setSubject(user.getUsername())
+        .setSubject(user.getAccount())
         .setIssuedAt(new Date())
         .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION))
         .signWith(SignatureAlgorithm.HS256, SECRET_KEY)

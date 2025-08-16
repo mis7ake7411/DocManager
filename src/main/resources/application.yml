@@ -14,6 +14,20 @@ fileStorage:
       - pdf
       - png
       - xlsx
+
+cors:
+  allowed:
+    origins:
+      - http://localhost:5173
+    methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - OPTIONS
+    headers:
+      - \\*
+
 # logging 配置文件
 logging:
   config: classpath:logback-spring.xml
