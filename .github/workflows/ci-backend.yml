@@ -39,6 +39,11 @@ jobs:
           java-version: '17'
           cache: maven
 
+      - name: Show repo layout (debug)
+        run: |
+          pwd
+          ls -la
+
       - name: Build & Test
         # working-directory: backend
         run: ./mvnw -B verify

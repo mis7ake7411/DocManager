@@ -1,2 +1,7 @@
-/mvnw text eol=lf
+# Unix scripts 必須 LF
+*.sh text eol=lf
+mvnw text eol=lf
+.mvn/wrapper/** text eol=lf
+
+# Windows 批次檔維持 CRLF
 *.cmd text eol=crlf
