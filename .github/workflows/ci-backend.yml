@@ -40,5 +40,5 @@ jobs:
           cache: maven
 
       - name: Build & Test
-        working-directory: backend
+        # working-directory: backend
         run: ./mvnw -B verify
