@@ -8,6 +8,13 @@ import java.util.Date;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+/**
+ * JWT 工具類別，用於生成和驗證 JSON Web Tokens。
+ * <p>
+ * 此類別提供生成訪問令牌和刷新令牌的方法，以及從令牌中提取帳戶信息和驗證令牌的方法。
+ * </p>
+ */
+
 @Component
 public class JwtUtil {
   private final String SECRET_KEY = "DocManagerSuperLongSecretKeySideProject123456";
