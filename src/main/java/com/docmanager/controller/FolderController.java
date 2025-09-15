@@ -9,7 +9,6 @@ import com.docmanager.model.vo.FolderVO;
 import com.docmanager.service.folder.FolderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,19 +22,16 @@ public class FolderController {
     private final FolderService folderService;
 
     @GetMapping("/folderTree")
-    @Transactional(readOnly=true)
     public List<FolderTreeVO> getAllFolders() {
         return folderService.getFolderTree();
     }
 
     @GetMapping("/{id}")
-    @Transactional(readOnly=true)
     public Folder getFolder(@PathVariable Long id) {
         return folderService.findById(id).orElse(null);
     }
 
     @PostMapping("/query")
-    @Transactional(readOnly=true)
     public PageResponse<FolderVO> queryFolders(@RequestBody FolderQueryReqDTO folderReqDTO) {
         return folderService.queryFolders(folderReqDTO);
     }

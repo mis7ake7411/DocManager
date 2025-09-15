@@ -9,7 +9,6 @@ import jakarta.validation.Valid;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +20,6 @@ public class DocumentController {
     private final DocumentService documentService;
 
     @GetMapping("/all")
-    @Transactional(readOnly=true)
     public PageResponse<DocumentVO> getAllDocuments(
         @RequestParam(defaultValue = "1") int page,
         @RequestParam(defaultValue = "10") int pageSize) {
@@ -30,7 +28,6 @@ public class DocumentController {
     }
 
     @GetMapping("/{id}")
-    @Transactional(readOnly=true)
     public Optional<DocumentVO> getDocument(@PathVariable Long id) {
         return documentService.findById(id);
     }

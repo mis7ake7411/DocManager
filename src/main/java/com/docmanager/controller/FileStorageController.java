@@ -11,7 +11,6 @@ import java.nio.file.Paths;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,7 +41,6 @@ public class FileStorageController {
     }
 
     @GetMapping("/download/{uuid}")
-    @Transactional(readOnly=true)
     public ResponseEntity<Resource> downloadFile(@PathVariable String uuid) throws IOException {
         // 由 service 取得檔案內容
         FileStorageVO fileStorageVO = fileStorageService.downloadFile(uuid);

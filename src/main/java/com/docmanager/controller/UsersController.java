@@ -10,7 +10,6 @@ import com.docmanager.model.vo.UserVO;
 import com.docmanager.service.user.UsersService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -26,7 +25,6 @@ public class UsersController {
     }
 
     @PutMapping("/{id}")
-    @Transactional(readOnly=true)
     public ApiResponse<UserVO> updateUser(@PathVariable Long id, @Valid @RequestBody UserUpdateReqDTO userUpdateReqDTO) {
         return ApiResponse.success(usersService.updateUser(id, userUpdateReqDTO));
     }
@@ -50,7 +48,6 @@ public class UsersController {
     }
 
     @GetMapping("/{id}")
-    @Transactional(readOnly=true)
     public ApiResponse<Users> getUser(@PathVariable Long id) {
         return usersService.getUserById(id)
             .map(ApiResponse::success)

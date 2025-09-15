@@ -21,7 +21,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -44,7 +43,6 @@ public class DocumentServiceImpl implements DocumentService {
   }
 
   @Override
-  @Transactional(readOnly=true)
   public Optional<DocumentVO> findById(Long id) {
     return documentRepository.findById(id)
         .map(DocumentVO::fromEntity);
