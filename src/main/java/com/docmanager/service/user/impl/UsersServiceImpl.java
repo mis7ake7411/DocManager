@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -92,11 +93,13 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
+    @Transactional(readOnly=true)
     public Optional<Users> getUserById(Long id) {
         return usersRepository.findById(id);
     }
 
     @Override
+    @Transactional(readOnly=true)
     public List<Users> getAllUsers() {
         return usersRepository.findAll();
     }

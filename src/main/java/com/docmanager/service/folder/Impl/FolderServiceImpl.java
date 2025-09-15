@@ -22,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -30,6 +31,7 @@ public class FolderServiceImpl implements FolderService {
   private final FolderRepository folderRepository;
 
   @Override
+  @Transactional(readOnly=true)
   public List<FolderTreeVO> getFolderTree() {
     // 查找所有父層級資料夾
     Set<Folder> parents = folderRepository.findByParentIdIsNullAndDeleteFlagFalseOrderBySortOrderAsc();
@@ -64,6 +66,7 @@ public class FolderServiceImpl implements FolderService {
   }
 
   @Override
+  @Transactional(readOnly=true)
   public Optional<Folder> findById(Long id) {
     return folderRepository.findById(id)
         .filter(folder -> !folder.getDeleteFlag())
@@ -130,6 +133,7 @@ public class FolderServiceImpl implements FolderService {
   }
 
   @Override
+  @Transactional(readOnly=true)
   public PageResponse<FolderVO> queryFolders(FolderQueryReqDTO folderReqDTO) {
     FolderBO bo = folderReqDTO.toBO();
     Specification<Folder> spec = FolderSpec.dynamic(bo);
