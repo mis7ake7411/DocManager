@@ -2,6 +2,8 @@ package com.docmanager.service.folder;
 
 import com.docmanager.model.base.PageResponse;
 import com.docmanager.model.dto.FolderQueryReqDTO;
+import com.docmanager.model.dto.FolderReorderDTO;
+import com.docmanager.model.dto.FolderReorderParentDTO;
 import com.docmanager.model.dto.FolderUpsertReqDTO;
 import com.docmanager.model.entity.Folder;
 import com.docmanager.model.vo.FolderTreeVO;
@@ -23,6 +25,10 @@ public interface FolderService {
   FolderVO createFolder(FolderUpsertReqDTO folderUpsertReqDTO);
 
   FolderVO updateFolder(FolderUpsertReqDTO folderUpsertReqDTO);
+
+  FolderTreeVO updateFolder(FolderReorderDTO reorderDTO);
+
+  List<FolderTreeVO> updateFolder(FolderReorderParentDTO reorderDTO);
 
   void deleteFolder(Long id);
   /**

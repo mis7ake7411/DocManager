@@ -12,6 +12,8 @@ public interface DocumentService {
 
   Optional<DocumentVO> findById(Long id);
 
+  PageResponse<DocumentVO> findByFolderId(Long id, Pageable pageable);
+
   DocumentVO saveDocument(@Valid DocumentUpsertReqDTO documentUpsertReqDTO);
 
   DocumentVO updateDocument(@Valid DocumentUpsertReqDTO documentUpsertReqDTO);

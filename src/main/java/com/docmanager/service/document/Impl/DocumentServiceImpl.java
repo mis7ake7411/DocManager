@@ -52,6 +52,20 @@ public class DocumentServiceImpl implements DocumentService {
   }
 
   @Override
+  @Transactional(readOnly=true)
+  public PageResponse<DocumentVO> findByFolderId(Long FoldId, Pageable pageable) {
+    Page<Document> documentsPage = documentRepository.findByFolderId(FoldId, pageable);
+
+    List<DocumentVO> documentVOs = documentsPage.getContent()
+        .stream()
+        .map(DocumentVO::fromEntity)
+        .toList();
+
+    log.info("findByFoldId {}, {}", FoldId, JsonUtils.toJson(documentVOs));
+    return PageResponse.of(documentVOs, documentsPage);
+  }
+
+  @Override
   public DocumentVO saveDocument(DocumentUpsertReqDTO documentUpsertReqDTO) {
     Optional<FileStorage> file = fileStorageRepository.findById(documentUpsertReqDTO.fileStorageId());
     Optional<Folder> folder = folderRepository.findById(documentUpsertReqDTO.folderId());

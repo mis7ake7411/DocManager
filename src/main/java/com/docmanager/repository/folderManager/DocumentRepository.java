@@ -2,6 +2,7 @@ package com.docmanager.repository.folderManager;
 
 import com.docmanager.model.entity.Document;
 import com.docmanager.repository.BaseRepository;
+import java.nio.channels.FileChannel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -21,4 +22,6 @@ public interface DocumentRepository extends BaseRepository<Document, Long> {
             AND doc.deleteFlag = false
     """)
   String findMaxDocumentVersion(String documentName, Long folderId);
+
+  Page<Document> findByFolderId(Long folderId, Pageable pageable);
 }

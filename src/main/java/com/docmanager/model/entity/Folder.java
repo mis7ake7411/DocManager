@@ -50,4 +50,8 @@ public class Folder {
   @Exclude
   private List<Document> documents;
 
+  @PreUpdate
+  public void preUpdate() {
+    this.modifiedTime = LocalDateTime.now();
+  }
 }

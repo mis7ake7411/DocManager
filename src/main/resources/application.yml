@@ -26,7 +26,8 @@ cors:
       - DELETE
       - OPTIONS
     headers:
-      - \\*
+      - "*"
+    exposed-headers: "Content-Disposition"
 
 # logging 配置文件
 logging:

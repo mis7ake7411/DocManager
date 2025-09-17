@@ -2,6 +2,8 @@ package com.docmanager.controller;
 
 import com.docmanager.model.base.PageResponse;
 import com.docmanager.model.dto.FolderQueryReqDTO;
+import com.docmanager.model.dto.FolderReorderDTO;
+import com.docmanager.model.dto.FolderReorderParentDTO;
 import com.docmanager.model.dto.FolderUpsertReqDTO;
 import com.docmanager.model.entity.Folder;
 import com.docmanager.model.vo.FolderTreeVO;
@@ -44,6 +46,16 @@ public class FolderController {
     @PutMapping("/update")
     public FolderVO updateFolder(@Valid @RequestBody FolderUpsertReqDTO folderUpsertReqDTO) {
         return folderService.updateFolder(folderUpsertReqDTO);
+    }
+
+    @PutMapping("/reorder")
+    public FolderTreeVO reorderFolders(@RequestBody FolderReorderDTO reorderDTO) {
+      return folderService.updateFolder(reorderDTO);
+    }
+
+    @PutMapping("/reorderParent")
+    public List<FolderTreeVO> reorderFoldersParent(@RequestBody FolderReorderParentDTO reorderDTO) {
+      return folderService.updateFolder(reorderDTO);
     }
 
     @DeleteMapping("/{id}")

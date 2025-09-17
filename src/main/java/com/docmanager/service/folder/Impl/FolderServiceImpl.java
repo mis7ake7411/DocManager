@@ -3,6 +3,9 @@ package com.docmanager.service.folder.Impl;
 import com.docmanager.model.base.PageResponse;
 import com.docmanager.model.bo.FolderBO;
 import com.docmanager.model.dto.FolderQueryReqDTO;
+import com.docmanager.model.dto.FolderReorderDTO;
+import com.docmanager.model.dto.FolderReorderDTO.ChildrenItem;
+import com.docmanager.model.dto.FolderReorderParentDTO;
 import com.docmanager.model.dto.FolderUpsertReqDTO;
 import com.docmanager.model.entity.Folder;
 import com.docmanager.model.vo.FolderTreeVO;
@@ -10,7 +13,9 @@ import com.docmanager.model.vo.FolderVO;
 import com.docmanager.repository.folderManager.FolderRepository;
 import com.docmanager.service.folder.FolderService;
 import com.docmanager.specifications.FolderSpec;
+import com.docmanager.util.JsonUtils;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -117,6 +122,52 @@ public class FolderServiceImpl implements FolderService {
 
     // 返回更新後的資料夾值對象
     return FolderVO.fromEntity(savedFolder);
+  }
+
+  @Override
+  public FolderTreeVO updateFolder(FolderReorderDTO reorderDTO) {
+    // 查找要更新的父資料夾
+    Folder parent = folderRepository.findByIdAndDeleteFlagFalse(reorderDTO.parentId())
+        .orElseThrow(() -> new IllegalArgumentException("資料夾不存在"));
+    // 要更新排序的子資料夾ID列表
+    List<ChildrenItem> childIds = reorderDTO.childrenItems();
+    List<Folder> updateFolders = new ArrayList<>();
+    for (ChildrenItem item : childIds) {
+      Folder childFolder = folderRepository.findByIdAndDeleteFlagFalse(item.id())
+          .orElseThrow(() -> new IllegalArgumentException("子資料夾不存在，ID: " + item.id()));
+      // 更新子資料夾的排序
+      childFolder.setSortOrder(item.childSort());
+      childFolder.setParent(parent);
+      updateFolders.add(childFolder);
+    }
+    // 批量保存更新後的子資料夾
+    List<Folder> savedFolders = folderRepository.saveAll(updateFolders);
+    log.info("更新資料夾 {} 下的 {} 個子資料夾排序", parent.getFolderName(), savedFolders.size());
+    // 返回更新後的父資料夾值對象
+    return FolderTreeVO.fromEntity(parent, savedFolders);
+  }
+
+  @Override
+  public List<FolderTreeVO> updateFolder(FolderReorderParentDTO reorderDTO) {
+    List<Folder> updateFolders = new ArrayList<>();
+    reorderDTO.items()
+        .forEach(item -> {
+          Folder parentFolder = folderRepository.findByIdAndDeleteFlagFalse(item.id())
+              .orElseThrow(() -> new IllegalArgumentException("資料夾不存在，ID: " + item.id()));
+          // 更新父資料夾的排序
+          parentFolder.setSortOrder(item.parentSort());
+          updateFolders.add(parentFolder);
+        });
+    // 批量保存更新後的父資料夾
+    List<Folder> savedFolders = folderRepository.saveAll(updateFolders);
+    log.info("更新 {} 個父資料夾排序", savedFolders.size());
+    // 返回更新後的父資料夾值對象
+    return savedFolders.stream()
+        .map(folder -> {
+          List<Folder> childFolders = folderRepository.findByParentIdAndDeleteFlagFalseOrderBySortOrderAsc(folder.getId());
+          return FolderTreeVO.fromEntity(folder, childFolders);
+        })
+        .toList();
   }
 
   @Override

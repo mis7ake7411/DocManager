@@ -4,6 +4,7 @@ import com.docmanager.constants.ErrorCode;
 import com.docmanager.exception.GlobalException;
 import com.docmanager.model.dto.LoginReqDTO;
 import com.docmanager.model.dto.LoginRespDTO;
+import com.docmanager.model.dto.RefreshReqDTO;
 import com.docmanager.model.dto.RegisterReqDTO;
 import com.docmanager.model.entity.Roles;
 import com.docmanager.model.entity.Users;
@@ -66,10 +67,10 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public LoginRespDTO refreshToken(String refreshToken) {
+    public LoginRespDTO refreshToken(RefreshReqDTO refresh) {
         String username;
         try {
-            username = jwtUtil.extractAccount(refreshToken);
+            username = jwtUtil.extractAccountFromRefresh(refresh.refreshToken());
         } catch (Exception e) {
             throw new GlobalException(ErrorCode.UNAUTHORIZED, ErrorCode.UNAUTHORIZED.message());
         }

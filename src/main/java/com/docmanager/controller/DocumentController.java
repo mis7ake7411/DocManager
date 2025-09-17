@@ -2,7 +2,6 @@ package com.docmanager.controller;
 
 import com.docmanager.model.base.PageResponse;
 import com.docmanager.model.dto.DocumentUpsertReqDTO;
-import com.docmanager.model.entity.Document;
 import com.docmanager.model.vo.DocumentVO;
 import com.docmanager.service.document.DocumentService;
 import jakarta.validation.Valid;
@@ -29,7 +28,15 @@ public class DocumentController {
 
     @GetMapping("/{id}")
     public Optional<DocumentVO> getDocument(@PathVariable Long id) {
-        return documentService.findById(id);
+      return documentService.findById(id);
+    }
+
+    @GetMapping("/folder/{id}")
+    public PageResponse<DocumentVO> getDocument(@PathVariable Long id,
+        @RequestParam(defaultValue = "1") int page,
+        @RequestParam(defaultValue = "10") int pageSize) {
+        Pageable pageable = Pageable.ofSize(pageSize).withPage(page - 1);
+        return documentService.findByFolderId(id, pageable);
     }
 
     @PostMapping("/create")

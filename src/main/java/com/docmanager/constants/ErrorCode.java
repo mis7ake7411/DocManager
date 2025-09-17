@@ -2,6 +2,7 @@ package com.docmanager.constants;
 
 public enum ErrorCode {
   SUCCESS("200", "成功"),
+  BAD_REQUEST("400", "錯誤的請求"),
   VALIDATION_ERROR("40001", "參數驗證失敗"),
   USER_EXISTS("40003", "使用者已存在"),
   PARAM_MISSING("40002", "缺少必要參數"),

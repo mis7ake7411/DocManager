@@ -3,6 +3,7 @@ package com.docmanager.controller;
 import com.docmanager.model.base.ApiResponse;
 import com.docmanager.model.dto.LoginReqDTO;
 import com.docmanager.model.dto.LoginRespDTO;
+import com.docmanager.model.dto.RefreshReqDTO;
 import com.docmanager.model.dto.RegisterReqDTO;
 import com.docmanager.service.auth.AuthService;
 import jakarta.validation.Valid;
@@ -30,7 +31,7 @@ public class AuthController {
   }
 
   @PostMapping("/refresh")
-  public ApiResponse<LoginRespDTO> refresh(@RequestBody String refreshToken) {
+  public ApiResponse<LoginRespDTO> refresh(@Valid @RequestBody RefreshReqDTO refreshToken) {
     return ApiResponse.success(authService.refreshToken(refreshToken));
   }
 

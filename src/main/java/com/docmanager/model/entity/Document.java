@@ -45,4 +45,8 @@ public class Document {
 
   private String description;
 
+  @PreUpdate
+  public void preUpdate() {
+    this.modifiedTime = LocalDateTime.now();
+  }
 }

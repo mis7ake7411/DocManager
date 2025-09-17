@@ -73,10 +73,10 @@ public class GlobalExceptionHandler {
 
   private HttpStatus mapErrorCodeToHttpStatus(ErrorCode errorCode) {
     return switch (errorCode) {
-      case VALIDATION_ERROR -> HttpStatus.BAD_REQUEST;
+      case UNAUTHORIZED -> HttpStatus.UNAUTHORIZED;
+      case USER_EXISTS, DUPLICATE_RECORD -> HttpStatus.CONFLICT;
+      case USER_NOT_FOUND, NOT_FOUND -> HttpStatus.NOT_FOUND;
       case FILE_TOO_LARGE -> HttpStatus.PAYLOAD_TOO_LARGE;
-      case NOT_FOUND -> HttpStatus.NOT_FOUND;
-      case DUPLICATE_RECORD -> HttpStatus.CONFLICT;
       case SYSTEM_ERROR -> HttpStatus.INTERNAL_SERVER_ERROR;
       default -> HttpStatus.BAD_REQUEST;
     };
