@@ -9,4 +9,9 @@ public record RegisterReqDTO(
     String password,
     @NotBlank(message = "Username cannot be blank")
     String username
-) {}
+) {
+  @Override
+  public String toString() {
+    return "RegisterReqDTO[account=%s, password=****, username=%s]".formatted(account, username);
+  }
+}
