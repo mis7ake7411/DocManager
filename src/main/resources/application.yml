@@ -117,3 +117,7 @@ management:
     web:
       exposure:
         include: health,info
+
+id-generator:
+  datacenterId: 1
+  machineId: 23
