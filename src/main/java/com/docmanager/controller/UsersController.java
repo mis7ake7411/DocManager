@@ -20,7 +20,7 @@ public class UsersController {
 
   private final UsersService usersService;
 
-  @PostMapping("/createUser")
+  @PostMapping("/create")
   public ApiResponse<UserVO> createUser(@Valid @RequestBody UserCreateReqDTO userCreateReqDTO) {
     return ApiResponse.success(usersService.createUser(userCreateReqDTO));
   }
