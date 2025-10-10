@@ -5,7 +5,10 @@ import com.docmanager.model.dto.LoginReqDTO;
 import com.docmanager.model.dto.LoginRespDTO;
 import com.docmanager.model.dto.RefreshReqDTO;
 import com.docmanager.model.dto.RegisterReqDTO;
+import com.docmanager.model.dto.UserCreateReqDTO;
+import com.docmanager.model.vo.UserVO;
 import com.docmanager.service.auth.AuthService;
+import com.docmanager.service.user.UsersService;
 import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthController {
   private final AuthService authService;
+  private final UsersService usersService;
 
   @PostMapping("/login")
   public ApiResponse<LoginRespDTO> login(@Valid @RequestBody LoginReqDTO loginRequest) {
@@ -39,5 +43,10 @@ public class AuthController {
   public ApiResponse<Void> logout(@RequestBody String account) {
     authService.logout(account);
     return ApiResponse.success();
+  }
+
+  @PostMapping("/createUser")
+  public ApiResponse<UserVO> createUser(@Valid @RequestBody UserCreateReqDTO userCreateReqDTO) {
+    return ApiResponse.success(usersService.createUser(userCreateReqDTO));
   }
 }

@@ -17,45 +17,48 @@ import java.util.List;
 @RequestMapping("/users")
 @RequiredArgsConstructor
 public class UsersController {
-    private final UsersService usersService;
 
-    @PostMapping
-    public ApiResponse<UserVO> createUser(@Valid @RequestBody UserCreateReqDTO userCreateReqDTO) {
-        return ApiResponse.success(usersService.createUser(userCreateReqDTO));
-    }
+  private final UsersService usersService;
 
-    @PutMapping("/{id}")
-    public ApiResponse<UserVO> updateUser(@PathVariable Long id, @Valid @RequestBody UserUpdateReqDTO userUpdateReqDTO) {
-        return ApiResponse.success(usersService.updateUser(id, userUpdateReqDTO));
-    }
+  @PostMapping("/createUser")
+  public ApiResponse<UserVO> createUser(@Valid @RequestBody UserCreateReqDTO userCreateReqDTO) {
+    return ApiResponse.success(usersService.createUser(userCreateReqDTO));
+  }
 
-    @PostMapping("/{id}/lock")
-    public ApiResponse<Void> lockUser(@PathVariable Long id) {
-        usersService.lockUser(id);
-        return ApiResponse.success();
-    }
+  @PutMapping("/{id}")
+  public ApiResponse<UserVO> updateUser(@PathVariable Long id,
+      @Valid @RequestBody UserUpdateReqDTO userUpdateReqDTO) {
+    return ApiResponse.success(usersService.updateUser(id, userUpdateReqDTO));
+  }
 
-    @PostMapping("/{id}/unlock")
-    public ApiResponse<Void> unlockUser(@PathVariable Long id) {
-        usersService.unlockUser(id);
-        return ApiResponse.success();
-    }
+  @PostMapping("/{id}/lock")
+  public ApiResponse<Void> lockUser(@PathVariable Long id) {
+    usersService.lockUser(id);
+    return ApiResponse.success();
+  }
 
-    @DeleteMapping("/{id}")
-    public ApiResponse<Void> deleteUser(@PathVariable Long id) {
-        usersService.deleteUser(id);
-        return ApiResponse.success();
-    }
+  @PostMapping("/{id}/unlock")
+  public ApiResponse<Void> unlockUser(@PathVariable Long id) {
+    usersService.unlockUser(id);
+    return ApiResponse.success();
+  }
 
-    @GetMapping("/{id}")
-    public ApiResponse<Users> getUser(@PathVariable Long id) {
-        return usersService.getUserById(id)
-            .map(ApiResponse::success)
-            .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND, ErrorCode.VALIDATION_ERROR.message()));
-    }
+  @DeleteMapping("/{id}")
+  public ApiResponse<Void> deleteUser(@PathVariable Long id) {
+    usersService.deleteUser(id);
+    return ApiResponse.success();
+  }
 
-    @GetMapping
-    public ApiResponse<List<Users>> getAllUsers() {
-        return ApiResponse.success(usersService.getAllUsers());
-    }
+  @GetMapping("/{id}")
+  public ApiResponse<Users> getUser(@PathVariable Long id) {
+    return usersService.getUserById(id)
+        .map(ApiResponse::success)
+        .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND,
+            ErrorCode.VALIDATION_ERROR.message()));
+  }
+
+  @GetMapping
+  public ApiResponse<List<Users>> getAllUsers() {
+    return ApiResponse.success(usersService.getAllUsers());
+  }
 }
