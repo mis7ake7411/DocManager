@@ -25,7 +25,7 @@
 - Lombok, Jakarta Validation
 - JJWT（io.jsonwebtoken）
 
-## 專案結構（重點）
+## 專案結構
 
 - com.docmanager.security
   - SecurityConfig：安全性設定、JWT 過濾器註冊、Swagger 路徑白名單
@@ -123,30 +123,6 @@ DTO/VO 建議結構：
 
 密碼加密：
 - 使用 BCryptPasswordEncoder（SecurityConfig 中已提供 PasswordEncoder Bean）
-
-## 常見問題（jjwt 棄用說明）
-
-- 為什麼 signWith 顯示棄用？
-  - 舊版用法如 signWith(SignatureAlgorithm, String/byte[]) 已被棄用。
-  - 正確做法：先建立 Key，再使用 signWith(Key, SignatureAlgorithm)。
-
-```java
-Key key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-String jwt = Jwts.builder()
-    .signWith(key, SignatureAlgorithm.HS256)
-    .compact();
-```
-
-- 為什麼 Jwts.parser().setSigningKey(...) 顯示棄用？
-  - 請改用 Jwts.parserBuilder().setSigningKey(key).build()。
-
-```java
-Claims claims = Jwts.parserBuilder()
-    .setSigningKey(key)
-    .build()
-    .parseClaimsJws(token)
-    .getBody();
-```
 
 ## 驗證與錯誤處理
 
